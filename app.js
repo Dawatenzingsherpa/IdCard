@@ -5,6 +5,8 @@ const IdCard = require("./Model/IdCardModel");
 const multer = require("multer");
 const { storage } = require("./Middleware/multer");
 
+const fs = require("fs");
+
 app.use(express.json());
 
 connectToDatabase();
@@ -36,7 +38,7 @@ app.get("/idCard/:id",async (req,res)=>{
 app.post("/idCard",upload.single("photo"),async (req,res)=>{
   let filename;
   if(req.file){
-    filename = "http://localhost:3000/idCard" + req.file.originalname;
+    filename = "http://localhost:3000/idCard/" + req.file.filename;
 
   }
   const {name, rollNo,grade, father , mother,contactNo} = req.body;
@@ -59,9 +61,24 @@ app.post("/idCard",upload.single("photo"),async (req,res)=>{
 
 app.patch('/idCard/:id',upload.single('photo'),async (req,res)=>{
   const id = req.params.id;
+    const oldData = await IdCard.findById(id);
+
   let filename;
   if(req.file){
-    filename = "http://localhost:3000/idCard" + req.file.originalname;
+    const oldPhotoUrl = oldData.photoUrl;
+    const url = "http://localhost:3000/idCard/".length;
+    const newPhotoUrl = oldPhotoUrl.slice(url);
+
+    fs.unlink(`storage/${newPhotoUrl}`,(error)=>{
+      if(error){
+        console.log(error);
+      }else {
+        console.log("file deleted successfully");
+      }
+    })
+
+    filename = "http://localhost:3000/idCard/" + req.file.filename;
+    
 
   }
   const {name, rollNo,grade, father , mother,contactNo} = req.body;
@@ -85,6 +102,19 @@ app.patch('/idCard/:id',upload.single('photo'),async (req,res)=>{
 
 app.delete('/idCard/:id',async (req,res)=>{
   const id = req.params.id;
+  const oldData = await IdCard.findById(id);
+  const oldPhotoUrl = oldData.photoUrl;
+  const url = "http://localhost:3000/idCard/".length;
+  const newPhotoUrl = oldPhotoUrl.slice(url);
+
+  fs.unlink(`storage/${newPhotoUrl}`,(error)=>{
+    if(error){
+      console.log(error);
+    }else {
+      console.log("file deleted successfully");
+    }
+  })
+
   await IdCard.findByIdAndDelete(id);
 
   res.status(200).json({
