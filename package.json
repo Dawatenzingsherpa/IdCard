@@ -1,0 +1,19 @@
+{
+  "name": "id-card-backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Dawa Tenzing Sherpa",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3",
+    "nodemon": "^3.1.14"
+  }
+}
