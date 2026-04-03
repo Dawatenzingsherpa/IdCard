@@ -122,7 +122,7 @@ app.delete('/idCard/:id',async (req,res)=>{
   })
 })
 
-
+app.use(express.static('./storage/'));
 
 app.listen(3000,()=>{
   console.log("NodeJs project started in 3000 port");
