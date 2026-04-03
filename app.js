@@ -1,11 +1,15 @@
 const express = require("express");
 const connectToDatabase = require("./database");
 const app = express();
-const IdCard = require("./Model/IdCardModel")
+const IdCard = require("./Model/IdCardModel");
+const multer = require("multer");
+const { storage } = require("./Middleware/multer");
 
 app.use(express.json());
 
 connectToDatabase();
+
+const upload = multer({storage : storage});
 
 app.get("/",(req,res)=>{
   res.send("id project");
@@ -29,7 +33,12 @@ app.get("/idCard/:id",async (req,res)=>{
 })
 
 
-app.post("/idCard",async (req,res)=>{
+app.post("/idCard",upload.single("photo"),async (req,res)=>{
+  let filename;
+  if(req.file){
+    filename = "http://localhost:3000/idCard" + req.file.originalname;
+
+  }
   const {name, rollNo,grade, father , mother,contactNo} = req.body;
 
 
@@ -39,7 +48,8 @@ app.post("/idCard",async (req,res)=>{
     grade,
     father,
     mother,
-    contactNo
+    contactNo,
+    photoUrl : filename
   })
 
   res.status(200).json({
@@ -47,8 +57,13 @@ app.post("/idCard",async (req,res)=>{
   })
 })
 
-app.patch('/idCard/:id',async (req,res)=>{
+app.patch('/idCard/:id',upload.single('photo'),async (req,res)=>{
   const id = req.params.id;
+  let filename;
+  if(req.file){
+    filename = "http://localhost:3000/idCard" + req.file.originalname;
+
+  }
   const {name, rollNo,grade, father , mother,contactNo} = req.body;
 
 
@@ -58,7 +73,8 @@ app.patch('/idCard/:id',async (req,res)=>{
     grade,
     father,
     mother,
-    contactNo
+    contactNo,
+    photoUrl : filename
   });
 
   res.status(200).json({

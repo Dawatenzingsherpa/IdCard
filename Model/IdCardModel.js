@@ -21,6 +21,9 @@ const IdSchema = new mongoose.Schema({
   },
   contactNo : {
     type : Number
+  },
+  photoUrl : {
+    type : String
   }
 })
 
